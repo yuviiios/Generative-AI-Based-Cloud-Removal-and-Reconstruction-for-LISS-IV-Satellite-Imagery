@@ -4,11 +4,13 @@ Training loop for LISS-IV cloud removal U-Net.
 
 import torch
 import torch.optim as optim
+from torch.optim.lr_scheduler import CosineAnnealingLR
 import numpy as np
 import os
 import yaml
 import time
 import csv
+import random
 from pathlib import Path
 from tqdm import tqdm
 from typing import Dict
@@ -23,6 +25,12 @@ class Trainer:
     """Manages training, validation, and checkpointing."""
 
     def __init__(self, cfg: dict):
+        # Set global seed for reproducibility
+        seed = cfg["project"].get("seed", 42)
+        torch.manual_seed(seed)
+        np.random.seed(seed)
+        random.seed(seed)
+
         self.cfg = cfg
         self.device = self._get_device()
         self.model_dir = Path(cfg["paths"]["model_dir"])
@@ -41,6 +49,11 @@ class Trainer:
         )
         self.epochs  = train_cfg["epochs"]
         self.patience = train_cfg.get("patience", 15)
+
+        # LR Scheduler (cosine annealing)
+        self.scheduler = CosineAnnealingLR(
+            self.optimizer, T_max=self.epochs, eta_min=1e-6
+        )
 
         self.best_val_loss = float("inf")
         self.patience_counter = 0
@@ -67,7 +80,9 @@ class Trainer:
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
             self.optimizer.step()
             total_loss += loss.item()
-        return total_loss / len(loader)
+        epoch_loss = total_loss / len(loader)
+        self.scheduler.step()  # Update learning rate
+        return epoch_loss
 
     @torch.no_grad()
     def _val_epoch(self, loader):

@@ -93,11 +93,8 @@ class UNet(nn.Module):
             self.decoders.append(DecoderBlock(bn_ch, f, f))
             bn_ch = f
 
-        # Output head
-        self.output_conv = nn.Sequential(
-            nn.Conv2d(feats[0], out_channels, 1),
-            nn.Sigmoid()   # Output in [0, 1] — spectral reflectance
-        )
+        # Output head (linear, no activation — allows residual learning)
+        self.output_conv = nn.Conv2d(feats[0], out_channels, 1)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         skips = []

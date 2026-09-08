@@ -78,8 +78,9 @@ def evaluate_model(model, test_loader, device) -> Dict[str, float]:
     with torch.no_grad():
         for cloudy, clear, mask in test_loader:
             cloudy = cloudy.to(device)
+            clear = clear.to(device)
             pred = model(cloudy).cpu().numpy()
-            target = clear.numpy()
+            target = clear.cpu().numpy()
             m = compute_metrics(pred, target)
             all_psnr.append(m["psnr"])
             all_ssim.append(m["ssim"])

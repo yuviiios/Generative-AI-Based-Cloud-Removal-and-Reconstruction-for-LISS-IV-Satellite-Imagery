@@ -70,12 +70,20 @@ liss4_cloud_removal/
 
 ## ⚡ Quick Start
 
-### Prerequisites
+### 🚀 Try in Google Colab (No Installation Needed!)
+
+**Fastest path to working demo (~40 min):**
+
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yuviiios/Generative-AI-Based-Cloud-Removal-and-Reconstruction-for-LISS-IV-Satellite-Imagery/blob/main/liss4_cloud_removal_final/LISS4_CloudRemoval_Colab_Demo.ipynb)
+
+See **[COLAB_QUICKSTART.md](COLAB_QUICKSTART.md)** for detailed Colab instructions.
+
+### Prerequisites (Local Setup)
 - Python 3.9+
 - GPU recommended (CUDA)
 - ~3GB disk space (includes data & models)
 
-### Setup
+### Setup (Local Machine)
 
 ```bash
 git clone https://github.com/yuviiios/Generative-AI-Based-Cloud-Removal-and-Reconstruction-for-LISS-IV-Satellite-Imagery.git
