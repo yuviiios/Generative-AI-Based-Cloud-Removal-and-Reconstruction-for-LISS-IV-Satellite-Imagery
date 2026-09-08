@@ -1,0 +1,57 @@
+# LISS-IV Cloud Removal - Configuration
+
+project:
+  name: "LISS4-CloudRemoval"
+  version: "1.0.0"
+  seed: 42
+
+data:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  mask_dir: "data/masks"
+  output_dir: "data/outputs"
+  patch_size: 256
+  stride: 128
+  num_bands: 3          # LISS-IV: Green, Red, NIR
+  n_synthetic_images: 200   # for prototype demo
+  train_split: 0.7
+  val_split: 0.15
+  test_split: 0.15
+
+cloud_simulation:
+  min_cloud_coverage: 0.1
+  max_cloud_coverage: 0.7
+  blob_density: 0.3
+  shadow_offset: [15, 20]
+  shadow_intensity: 0.4
+
+model:
+  architecture: "unet"    # Options: unet, attention_unet
+  in_channels: 3
+  out_channels: 3
+  base_features: 32
+  depth: 4
+  dropout: 0.1
+
+training:
+  epochs: 10              # Quick demo; use 100+ for real training
+  batch_size: 8
+  learning_rate: 0.0002
+  weight_decay: 0.0001
+  scheduler: "cosine"
+  patience: 15            # Early stopping
+
+loss:
+  l1_weight: 1.0
+  ssim_weight: 0.5
+  perceptual_weight: 0.1
+
+evaluation:
+  metrics: ["psnr", "ssim", "mae", "sam"]
+
+paths:
+  model_dir: "models"
+  results_dir: "results"
+  log_dir: "logs"
+
+device: "auto"   # auto selects CUDA if available, else CPU
